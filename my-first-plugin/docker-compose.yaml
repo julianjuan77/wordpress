@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  jmfp-web:
+    image: wordpress:latest
+    depends_on:
+      - jmfp-db
+    container_name: jmfp-web
+    ports:
+      - "8080:80"
+    environment:
+      - WORDPRESS_DB_HOST=jmfp-db
+      - WORDPRESS_DB_USER=system
+      - WORDPRESS_DB_PASSWORD=system
+      - WORDPRESS_DB_NAME=wordpress
+      - WORDPRESS_DEBUG=1
+    volumes:
+      - ~/docker-vol/jmfp/web:/var/www/html
+      - ./jmfp:/var/www/html/wp-content/plugins/jmfp
+
+  jmfp-db:
+    image: mysql:latest
+    container_name: jmfp-db
+    command: --default-authentication-plugin=mysql_native_password
+    expose:
+      - "3306"
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: system
+      MYSQL_PASSWORD: system
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ~/docker-vol/jmfp/db:/var/lib/mysql
